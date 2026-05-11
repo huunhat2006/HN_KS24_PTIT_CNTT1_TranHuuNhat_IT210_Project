@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/main-layout :: main-layout(~{::content})}">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${pageTitle} ?: 'Admin Dashboard'">Admin Dashboard</title>
+</head>
+<body>
+<th:block th:fragment="content">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Dashboard Quản Trị</h1>
+    </div>
+
+    <div class="row mb-4 g-3">
+        <div class="col-12 col-md-4">
+            <div class="card stat-card" style="border-left: 4px solid #0d6efd;">
+                <div class="stat-number" style="color: #0d6efd;" th:text="${totalEquipments}">0</div>
+                <div class="stat-label">Tổng số thiết bị</div>
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="card stat-card" style="border-left: 4px solid #1abc9c;">
+                <div class="stat-number" style="color: #1abc9c;" th:text="${totalUsers}">0</div>
+                <div class="stat-label">Tổng số người dùng</div>
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="card stat-card" style="border-left: 4px solid #fd7e14;">
+                <div class="stat-number" style="color: #fd7e14;" th:text="${totalMentoringSessions}">0</div>
+                <div class="stat-label">Tổng lịch cố vấn</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-12 col-xl-8">
+            <div class="card p-3 shadow-sm h-100">
+                <h5 class="text-center mb-3">Top 5 Giảng viên có nhiều lịch nhất</h5>
+                <canvas data-type="bar" th:attr="data-labels=${topLecturerNamesJson},data-values=${topLecturerCountsJson}"></canvas>
+            </div>
+        </div>
+        <div class="col-12 col-xl-4">
+            <div class="card p-3 shadow-sm h-100 d-flex justify-content-center align-items-center">
+                <h5 class="text-center mb-3">Cơ cấu hệ thống</h5>
+                <div style="position: relative; width: 100%; max-width: 300px;">
+                    <canvas data-type="pie" th:attr="data-labels=${overviewLabelsJson},data-values=${overviewValuesJson}"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</th:block>
+</body>
+</html>

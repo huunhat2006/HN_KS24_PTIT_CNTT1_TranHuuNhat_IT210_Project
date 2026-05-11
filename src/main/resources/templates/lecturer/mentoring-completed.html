@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" th:replace="layout/main-layout :: main-layout(~{::content})">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${pageTitle} ?: 'Lịch Hoàn thành'">Lịch Hoàn thành</title>
+</head>
+<body>
+<th:block th:fragment="content">
+    <div th:if="${successMessage}" class="alert alert-success mb-4" role="alert" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="alert alert-danger mb-4" role="alert" th:text="${errorMessage}"></div>
+
+    <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 align-items-lg-center mb-4">
+        <div>
+            <h1 class="mb-1">Lịch Hoàn thành</h1>
+            <div class="text-muted">Các lịch đã tư vấn và trạng thái đánh giá</div>
+        </div>
+        <label for="completedSort" class="visually-hidden">Sắp xếp</label>
+        <select id="completedSort" class="form-select ajax-sort" data-url="/lecturer/completed-sessions" name="sort" style="width: auto;">
+            <option value="date_asc" th:selected="${currentSort == 'date_asc'}">Ngày tăng dần</option>
+            <option value="date_desc" th:selected="${currentSort == 'date_desc'}">Ngày giảm dần</option>
+            <option value="time_asc" th:selected="${currentSort == 'time_asc'}">Giờ tăng dần</option>
+            <option value="time_desc" th:selected="${currentSort == 'time_desc'}">Giờ giảm dần</option>
+        </select>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Sinh viên</th>
+                        <th>Ngày</th>
+                        <th>Giờ</th>
+                        <th>Trạng thái</th>
+                        <th>Thao tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="mentoringSession : ${mentoringSessions}">
+                        <td th:text="${mentoringSession.id}"></td>
+                        <td th:text="${mentoringSession.student != null && mentoringSession.student.userProfile != null ? mentoringSession.student.userProfile.fullName : ''}"></td>
+                        <td th:text="${#temporals.format(mentoringSession.sessionDate, 'dd/MM/yyyy')}"></td>
+                        <td th:text="|${#temporals.format(mentoringSession.startTime, 'HH:mm')} - ${#temporals.format(mentoringSession.endTime, 'HH:mm')}|"></td>
+                        <td>
+                            <span th:if="${mentoringSession.academicEvaluation == null and #lists.contains(blockedEvaluationSessionIds, mentoringSession.id)}" class="badge bg-warning text-dark">Chờ cấp phát</span>
+                            <span th:if="${mentoringSession.academicEvaluation == null and !#lists.contains(blockedEvaluationSessionIds, mentoringSession.id)}" class="badge bg-warning text-dark">Đang chờ đánh giá</span>
+                            <span th:if="${mentoringSession.academicEvaluation != null}" class="badge bg-success">Đã đánh giá</span>
+                        </td>
+                        <td>
+                            <button type="button"
+                                    class="btn btn-primary btn-sm"
+                                    th:if="${mentoringSession.academicEvaluation == null and !#lists.contains(blockedEvaluationSessionIds, mentoringSession.id)}"
+                                    data-action="open-evaluate-modal"
+                                    th:attr="data-session-id=${mentoringSession.id},data-student-name=${mentoringSession.student != null && mentoringSession.student.userProfile != null ? mentoringSession.student.userProfile.fullName : ''},data-session-date=${#temporals.format(mentoringSession.sessionDate, 'dd/MM/yyyy')},data-start-time=${#temporals.format(mentoringSession.startTime, 'HH:mm')},data-end-time=${#temporals.format(mentoringSession.endTime, 'HH:mm')},data-sort=${currentSort}">
+                                Đánh giá
+                            </button>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(mentoringSessions)}">
+                        <td colspan="6" class="text-center text-muted py-4">Không có lịch hoàn thành</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="evaluateSessionModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <form th:action="@{/lecturer/evaluate-session}" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Đánh giá lịch</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="sessionId">
+                        <input type="hidden" name="sort" th:value="${currentSort}">
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label for="completedStudentName" class="form-label">Tên sinh viên</label>
+                                <input id="completedStudentName" type="text" name="studentName" class="form-control" readonly>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="completedSessionDate" class="form-label">Ngày</label>
+                                <input id="completedSessionDate" type="text" name="sessionDate" class="form-control" readonly>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="completedSessionTime" class="form-label">Giờ</label>
+                                <input id="completedSessionTime" type="text" name="sessionTime" class="form-control" readonly>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="completedPerformanceRating" class="form-label">Điểm</label>
+                            <select id="completedPerformanceRating" name="performanceRating" class="form-select" required>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5" selected>5</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="completedEvaluationNotes" class="form-label">Nhận xét</label>
+                            <textarea id="completedEvaluationNotes" name="evaluationNotes" class="form-control" rows="4" required></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Lưu</button>
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Hủy</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>

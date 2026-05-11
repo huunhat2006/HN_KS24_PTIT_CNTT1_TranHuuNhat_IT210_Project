@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle} ?: 'Đăng nhập'"></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container-fluid vh-100 overflow-hidden">
+    <div class="row h-100">
+        <div class="col-lg-5 d-none d-lg-flex flex-column justify-content-center align-items-center text-white" style="background: linear-gradient(rgba(25, 135, 84, 0.85), rgba(20, 108, 67, 0.9)), url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=1000') center/cover;">
+            <i class="fa-solid fa-graduation-cap display-1 mb-4"></i>
+            <h1 class="fw-bold display-5">Smart Academic</h1>
+            <p class="fs-5 opacity-75">& Lab Support Platform</p>
+        </div>
+
+        <div class="col-12 col-lg-7 d-flex justify-content-center align-items-center bg-light">
+            <div class="w-100 px-4 px-md-5" style="max-width: 500px;">
+                <h2 class="fw-bold text-dark mb-1">Chào mừng trở lại</h2>
+                <p class="text-secondary mb-4">Vui lòng đăng nhập vào tài khoản của bạn</p>
+
+                <form th:action="@{/login}" th:object="${userLoginDTO}" method="post">
+                    <div class="mb-3">
+                        <label for="username" class="form-label small fw-bold text-secondary">Username</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white text-secondary"><i class="fa-solid fa-user"></i></span>
+                            <input type="text" class="form-control border-start-0 ps-0" id="username" placeholder="Nhập username" th:field="*{username}">
+                        </div>
+                        <div class="text-danger small mt-1 fw-bold" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password" class="form-label small fw-bold text-secondary">Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white text-secondary"><i class="fa-solid fa-lock"></i></span>
+                            <input type="password" class="form-control border-start-0 ps-0" id="password" placeholder="Nhập mật khẩu" th:field="*{password}">
+                        </div>
+                        <div class="text-danger small mt-1 fw-bold" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                    </div>
+
+                    <div th:if="${errorMessage}" class="alert alert-danger py-2 small fw-bold mb-3 shadow-sm" role="alert">
+                        <i class="fa-solid fa-circle-xmark me-1"></i><span th:text="${errorMessage}"></span>
+                    </div>
+                    <div th:if="${successMessage}" class="alert alert-success py-2 small fw-bold mb-3 shadow-sm" role="alert">
+                        <i class="fa-solid fa-circle-check me-1"></i><span th:text="${successMessage}"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100 py-2 fw-bold mb-3 shadow-sm">Đăng nhập</button>
+                </form>
+
+                <div class="text-center">
+                    <span class="text-muted small">Chưa có tài khoản?</span>
+                    <a th:href="@{/register}" class="text-success text-decoration-none fw-bold small ms-1">Đăng ký ngay</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

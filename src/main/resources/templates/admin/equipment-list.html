@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" th:replace="layout/main-layout :: main-layout(~{::content})">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${pageTitle} ?: 'Quản lý Thiết bị'">Quản lý Thiết bị</title>
+</head>
+<body>
+<th:block th:fragment="content">
+    <div th:if="${successMessage}" class="alert alert-success mb-4" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="alert alert-danger mb-4" th:text="${errorMessage}"></div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 align-items-lg-center mb-3">
+                <div>
+                    <h4 class="mb-1">Quản lý Thiết bị</h4>
+                    <div class="text-muted">Danh sách thiết bị hiện có trong hệ thống</div>
+                </div>
+                <a th:href="@{/admin/equipment/add}" class="btn btn-primary">Thêm mới thiết bị</a>
+            </div>
+
+            <form th:action="@{/admin/equipment}" method="get" class="row g-2 align-items-center mb-3">
+                <div class="col-12 col-lg-8">
+                    <input type="text" class="form-control" name="query" th:value="${searchQuery}" placeholder="Tìm theo tên thiết bị">
+                </div>
+                <div class="col-12 col-lg-4 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary flex-grow-1">Tìm kiếm</button>
+                    <a th:href="@{/admin/equipment}" class="btn btn-outline-secondary">Làm mới</a>
+                </div>
+            </form>
+
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tên thiết bị</th>
+                        <th>Loại phòng Lab</th>
+                        <th>Tổng số lượng</th>
+                        <th>Số lượng sẵn sàng</th>
+                        <th class="text-end">Thao tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="equipment : ${equipments}">
+                        <td th:text="${equipment.id}"></td>
+                        <td th:text="${equipment.equipmentName}"></td>
+                        <td th:text="${equipment.labTypeName}"></td>
+                        <td th:text="${equipment.totalQuantity}"></td>
+                        <td th:text="${equipment.availableQuantity}"></td>
+                        <td class="text-end">
+                            <div class="btn-group btn-group-sm" role="group">
+                                <a th:href="@{/admin/equipment/edit/{id}(id=${equipment.id})}" class="btn btn-outline-warning">Sửa</a>
+                                <a th:href="@{/admin/equipment/delete/{id}/confirm(id=${equipment.id})}" class="btn btn-outline-danger">Xóa</a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(equipments)}">
+                        <td colspan="6" class="text-center text-muted py-4">Không có thiết bị nào phù hợp</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>

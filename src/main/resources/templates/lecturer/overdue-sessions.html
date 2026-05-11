@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" th:replace="layout/main-layout :: main-layout(~{::content})">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${pageTitle} ?: 'Lịch Quá hạn'">Lịch Quá hạn</title>
+</head>
+<body>
+<th:block th:fragment="content">
+    <div th:if="${successMessage}" class="alert alert-success mb-4" role="alert" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="alert alert-danger mb-4" role="alert" th:text="${errorMessage}"></div>
+    <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 align-items-lg-center mb-4">
+        <div>
+            <h1 class="mb-1">Lịch Quá hạn</h1>
+            <div class="text-muted">Các lịch quá hạn cần theo dõi</div>
+        </div>
+        <select class="form-select ajax-sort" data-url="/lecturer/overdue-sessions" name="sort" style="width: auto;">
+            <option value="date_asc" th:selected="${currentSort == 'date_asc'}">Ngày tăng dần</option>
+            <option value="date_desc" th:selected="${currentSort == 'date_desc'}">Ngày giảm dần</option>
+            <option value="time_asc" th:selected="${currentSort == 'time_asc'}">Giờ tăng dần</option>
+            <option value="time_desc" th:selected="${currentSort == 'time_desc'}">Giờ giảm dần</option>
+        </select>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Sinh viên</th>
+                        <th>Ngày</th>
+                        <th>Giờ</th>
+                        <th>Trạng thái</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="mentoringSession : ${mentoringSessions}">
+                        <td th:text="${mentoringSession.id}"></td>
+                        <td th:text="${mentoringSession.student != null && mentoringSession.student.userProfile != null ? mentoringSession.student.userProfile.fullName : ''}"></td>
+                        <td th:text="${#temporals.format(mentoringSession.sessionDate, 'dd/MM/yyyy')}"></td>
+                        <td th:text="|${#temporals.format(mentoringSession.startTime, 'HH:mm')} - ${#temporals.format(mentoringSession.endTime, 'HH:mm')}|"></td>
+                        <td><span class="badge bg-danger">Quá hạn</span></td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(mentoringSessions)}">
+                        <td colspan="5" class="text-center text-muted py-4">Không có lịch quá hạn</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>
+

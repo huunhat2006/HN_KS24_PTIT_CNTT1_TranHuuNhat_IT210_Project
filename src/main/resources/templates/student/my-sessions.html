@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" th:replace="layout/main-layout :: main-layout(~{::content})">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${pageTitle} ?: 'Lịch của tôi'">Lịch của tôi</title>
+</head>
+<body>
+<th:block th:fragment="content">
+    <div th:if="${successMessage}" class="alert alert-success mb-4" role="alert" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="alert alert-danger mb-4" role="alert" th:text="${errorMessage}"></div>
+
+    <div class="d-flex justify-content-between align-items-center mb-4 gap-3 flex-wrap">
+        <h1 class="mb-0">Lịch của tôi</h1>
+        <form method="get" class="m-0" data-ajax="false">
+            <label for="sort" class="visually-hidden">Sắp xếp</label>
+            <select id="sort" class="form-select ajax-sort" data-url="/student/my-sessions" name="sort" style="width: auto;">
+                <option value="date_asc" th:selected="${currentSort == 'date_asc'}">Ngày tăng dần</option>
+                <option value="date_desc" th:selected="${currentSort == 'date_desc'}">Ngày giảm dần</option>
+                <option value="time_asc" th:selected="${currentSort == 'time_asc'}">Giờ tăng dần</option>
+                <option value="time_desc" th:selected="${currentSort == 'time_desc'}">Giờ giảm dần</option>
+            </select>
+        </form>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Giảng viên</th>
+                        <th>Ngày</th>
+                        <th>Giờ</th>
+                        <th>Trạng thái</th>
+                        <th>Thao tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="mentoringSession : ${mentoringSessions}">
+                        <td th:text="${mentoringSession.id}"></td>
+                        <td th:text="${mentoringSession.lecturer != null && mentoringSession.lecturer.user != null && mentoringSession.lecturer.user.userProfile != null ? mentoringSession.lecturer.user.userProfile.fullName : ''}"></td>
+                        <td th:text="${#temporals.format(mentoringSession.sessionDate, 'dd/MM/yyyy')}"></td>
+                        <td th:text="|${#temporals.format(mentoringSession.startTime, 'HH:mm')} - ${#temporals.format(mentoringSession.endTime, 'HH:mm')}|"></td>
+                        <td>
+                            <span th:if="${mentoringSession.status.name() == 'PENDING'}" class="badge bg-warning text-dark">Chờ xử lý</span>
+                            <span th:if="${mentoringSession.status.name() == 'COMPLETED'}" class="badge bg-success">Hoàn thành</span>
+                            <span th:if="${mentoringSession.status.name() == 'CANCELED'}" class="badge bg-danger">Hủy</span>
+                            <span th:if="${mentoringSession.status.name() == 'OVERDUE'}" class="badge bg-secondary">Quá hạn</span>
+                        </td>
+                        <td>
+                            <th:block th:if="${mentoringSession.status.name() == 'PENDING'}">
+                                <form th:action="@{/student/cancel-session/{id}(id=${mentoringSession.id})}" method="post" data-ajax="true" class="d-inline-block">
+                                    <input type="hidden" name="sort" th:value="${currentSort}">
+                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Xác nhận hủy lịch?');">Hủy</button>
+                                </form>
+                            </th:block>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(mentoringSessions)}">
+                        <td colspan="6" class="text-center text-muted py-4">Không có lịch nào</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>
+
+
+
+

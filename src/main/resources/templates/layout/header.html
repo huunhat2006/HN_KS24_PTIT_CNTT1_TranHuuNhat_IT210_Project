@@ -1,0 +1,15 @@
+<div th:fragment="header" class="header d-flex align-items-center justify-content-between px-4">
+    <a th:href="${session.loggedUser != null ? (session.loggedUser.role.name() == 'ADMIN' ? '/admin/dashboard' : (session.loggedUser.role.name() == 'LECTURER' ? '/lecturer/dashboard' : '/student')) : '/login'}" class="text-white text-decoration-none fw-semibold fs-4 d-flex align-items-center gap-2">
+        <i class="fa-solid fa-graduation-cap"></i>
+        <span>Smart Academic & Lab Support Platform</span>
+    </a>
+    <div class="d-flex align-items-center gap-3 text-white" th:if="${session.loggedUser}">
+        <div class="text-end">
+            <div class="fw-semibold" th:text="${session.loggedUser.userProfile != null ? session.loggedUser.userProfile.fullName : session.loggedUser.username}"></div>
+            <small th:text="${session.loggedUser.role.name()}"></small>
+        </div>
+        <form action="/logout" method="post" class="m-0" data-ajax="false">
+            <button type="submit" class="btn btn-light btn-sm">Đăng xuất</button>
+        </form>
+    </div>
+</div>

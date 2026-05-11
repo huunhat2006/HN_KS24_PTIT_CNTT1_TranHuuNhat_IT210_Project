@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" th:replace="layout/main-layout :: main-layout(~{::content})">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${pageTitle} ?: 'Thiết bị'">Thiết bị</title>
+</head>
+<body>
+<th:block th:fragment="content">
+    <div th:if="${successMessage}" class="alert alert-success mb-4" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="alert alert-danger mb-4" th:text="${errorMessage}"></div>
+
+    <div class="row justify-content-center">
+        <div class="col-12 col-xl-8">
+            <div class="card">
+                <div class="card-body p-4">
+                    <div class="mb-4">
+                        <h4 class="mb-1" th:text="${equipmentDTO.id != null ? 'Cập nhật thiết bị' : 'Thêm mới thiết bị'}"></h4>
+                        <div class="text-muted">Nhập thông tin thiết bị và loại phòng lab tương ứng</div>
+                    </div>
+                    <form th:action="@{/admin/equipment/save}" th:object="${equipmentDTO}" method="post">
+                        <input type="hidden" th:field="*{id}">
+
+                        <div class="mb-3">
+                            <label for="equipmentName" class="form-label">Tên thiết bị</label>
+                            <input id="equipmentName" type="text" class="form-control" th:field="*{equipmentName}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="labTypeId" class="form-label">Loại phòng Lab</label>
+                            <select id="labTypeId" name="labTypeId" class="form-select">
+                                <option value="">Chọn loại phòng Lab</option>
+                                <option th:each="labType : ${labTypes}" th:value="${labType.id}" th:text="${labType.typeName}" th:selected="${equipmentDTO.labTypeId != null and equipmentDTO.labTypeId == labType.id}"></option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Mô tả</label>
+                            <textarea id="description" class="form-control" rows="4" th:field="*{description}"></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="totalQuantity" class="form-label">Tổng số lượng</label>
+                            <input id="totalQuantity" type="number" min="0" class="form-control" th:field="*{totalQuantity}" required>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">Lưu</button>
+                            <a th:href="@{/admin/equipment}" class="btn btn-outline-secondary">Quay lại</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>

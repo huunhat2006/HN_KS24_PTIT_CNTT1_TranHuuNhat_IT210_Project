@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" th:replace="layout/main-layout :: main-layout(~{::content})">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${pageTitle} ?: 'Thiết bị chờ mượn'">Thiết bị chờ mượn</title>
+</head>
+<body>
+<th:block th:fragment="content">
+    <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 align-items-lg-center mb-4">
+        <div>
+            <h1 class="mb-1">Thiết bị chờ mượn</h1>
+            <div class="text-muted">Danh sách yêu cầu mượn thiết bị đang chờ duyệt</div>
+        </div>
+        <div>
+            <select class="form-select ajax-sort" data-url="/admin/pending-borrows" name="sort">
+                <option value="lecturer_asc" th:selected="${currentSort == 'lecturer_asc'}">Tên giảng viên (A-Z)</option>
+                <option value="equipment_asc" th:selected="${currentSort == 'equipment_asc'}">Tên thiết bị (A-Z)</option>
+                <option value="quantity_asc" th:selected="${currentSort == 'quantity_asc'}">Số lượng tăng dần</option>
+            </select>
+        </div>
+    </div>
+    <div class="row g-3">
+        <div class="col-12 col-md-6 col-xl-4" th:each="item : ${pendingBorrows}">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column gap-2">
+                    <div class="fw-bold" th:text="${item.lecturerName}"></div>
+                    <div><span class="fw-semibold">Thiết bị:</span> <span th:text="${item.equipmentName}"></span></div>
+                    <div><span class="fw-semibold">Loại lab:</span> <span th:text="${item.labTypeName}"></span></div>
+                    <div><span class="fw-semibold">Số lượng:</span> <span th:text="${item.quantity}"></span></div>
+                    <div><span class="fw-semibold">Sinh viên:</span> <span th:text="${item.studentName}"></span></div>
+                    <div class="mt-2">
+                        <form th:action="@{/admin/pending-borrows/confirm}" method="post" data-ajax="true" class="d-inline-block">
+                            <input type="hidden" name="borrowingRecordId" th:value="${item.borrowingRecordId}" />
+                            <input type="hidden" name="sort" th:value="${currentSort}" />
+                            <button type="submit" class="btn btn-success btn-sm">Xác nhận</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12" th:if="${#lists.isEmpty(pendingBorrows)}">
+            <div class="alert alert-secondary mb-0">Chưa có yêu cầu mượn thiết bị đang chờ duyệt</div>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>
+

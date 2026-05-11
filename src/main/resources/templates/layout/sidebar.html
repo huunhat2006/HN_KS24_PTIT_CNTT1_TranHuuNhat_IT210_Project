@@ -1,0 +1,62 @@
+<div th:fragment="sidebar" class="h-100">
+    <nav class="nav flex-column py-3" th:if="${session.loggedUser}">
+
+        <th:block th:if="${session.loggedUser.role.name() == 'ADMIN'}">
+            <a th:href="@{/admin/dashboard}" class="nav-link ajax-link" data-home-link="true" th:classappend="${currentUri == '/admin' || currentUri == '/admin/dashboard'} ? 'active' : ''">
+                <i class="fa-solid fa-gauge-high me-2"></i> Dashboard
+            </a>
+            <a th:href="@{/admin/equipment}" class="nav-link ajax-link" th:classappend="${currentUri != null and currentUri.startsWith('/admin/equipment')} ? 'active' : ''">
+                <i class="fa-solid fa-screwdriver-wrench me-2"></i> Quản lý Thiết bị
+            </a>
+            <a th:href="@{/admin/pending-borrows}" class="nav-link ajax-link" th:classappend="${currentUri != null and currentUri.startsWith('/admin/pending-borrows')} ? 'active' : ''">
+                <i class="fa-solid fa-boxes-stacked me-2"></i> Thiết bị chờ mượn
+            </a>
+            <a th:href="@{/admin/users}" class="nav-link ajax-link" th:classappend="${currentUri != null and currentUri.startsWith('/admin/users')} ? 'active' : ''">
+                <i class="fa-solid fa-users me-2"></i> Quản lý Người dùng
+            </a>
+            <a th:href="@{/admin/mentoring}" class="nav-link ajax-link" th:classappend="${currentUri != null and currentUri.startsWith('/admin/mentoring')} ? 'active' : ''">
+                <i class="fa-solid fa-calendar-check me-2"></i> Lịch cố vấn
+            </a>
+            <a th:href="@{/profile}" class="nav-link ajax-link" th:classappend="${currentUri == '/profile'} ? 'active' : ''">
+                <i class="fa-solid fa-id-card me-2"></i> Profile
+            </a>
+        </th:block>
+
+        <th:block th:if="${session.loggedUser.role.name() == 'LECTURER'}">
+            <a th:href="@{/lecturer/dashboard}" class="nav-link ajax-link" data-home-link="true" th:classappend="${currentUri == '/lecturer' || currentUri == '/lecturer/dashboard'} ? 'active' : ''">
+                <i class="fa-solid fa-gauge-high me-2"></i> Dashboard
+            </a>
+            <a th:href="@{/lecturer/completed-sessions}" class="nav-link ajax-link" th:classappend="${currentUri != null and currentUri.startsWith('/lecturer/completed-sessions')} ? 'active' : ''">
+                <i class="fa-solid fa-circle-check me-2"></i> Lịch đã tư vấn
+            </a>
+            <a th:href="@{/lecturer/pending-sessions}" class="nav-link ajax-link" th:classappend="${currentUri != null and currentUri.startsWith('/lecturer/pending-sessions')} ? 'active' : ''">
+                <i class="fa-solid fa-hourglass-half me-2"></i> Lịch đang chờ
+            </a>
+            <a th:href="@{/lecturer/overdue-sessions}" class="nav-link ajax-link" th:classappend="${currentUri != null and currentUri.startsWith('/lecturer/overdue-sessions')} ? 'active' : ''">
+                <i class="fa-solid fa-triangle-exclamation me-2"></i> Lịch đã quá hạn
+            </a>
+            <a th:href="@{/profile}" class="nav-link ajax-link" th:classappend="${currentUri == '/profile'} ? 'active' : ''">
+                <i class="fa-solid fa-id-card me-2"></i> Profile
+            </a>
+        </th:block>
+
+        <th:block th:if="${session.loggedUser.role.name() == 'STUDENT'}">
+            <a th:href="@{/student/dashboard}" class="nav-link ajax-link" data-home-link="true" th:classappend="${currentUri == '/student' || currentUri == '/student/dashboard'} ? 'active' : ''">
+                <i class="fa-solid fa-gauge-high me-2"></i> Dashboard
+            </a>
+            <a th:href="@{/student/book-session}" class="nav-link ajax-link" th:classappend="${currentUri != null and currentUri.startsWith('/student/book-session')} ? 'active' : ''">
+                <i class="fa-solid fa-calendar-plus me-2"></i> Đặt lịch tư vấn
+            </a>
+            <a th:href="@{/student/my-sessions}" class="nav-link ajax-link" th:classappend="${currentUri != null and currentUri.startsWith('/student/my-sessions')} ? 'active' : ''">
+                <i class="fa-solid fa-calendar-days me-2"></i> Lịch tư vấn của tôi
+            </a>
+            <a th:href="@{/student/academic-profile}" class="nav-link ajax-link" th:classappend="${currentUri != null and currentUri.startsWith('/student/academic-profile')} ? 'active' : ''">
+                <i class="fa-solid fa-graduation-cap me-2"></i> Hồ sơ học thuật
+            </a>
+            <a th:href="@{/profile}" class="nav-link ajax-link" th:classappend="${currentUri == '/profile'} ? 'active' : ''">
+                <i class="fa-solid fa-id-card me-2"></i> Profile
+            </a>
+        </th:block>
+
+    </nav>
+</div>

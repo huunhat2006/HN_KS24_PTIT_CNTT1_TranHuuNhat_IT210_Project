@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" th:replace="layout/main-layout :: main-layout(~{::content})">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${pageTitle} ?: 'Hồ sơ cá nhân'">Hồ sơ cá nhân</title>
+</head>
+<body>
+<th:block th:fragment="content">
+    <div th:if="${successMessage}" class="alert alert-success mb-4" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="alert alert-danger mb-4" th:text="${errorMessage}"></div>
+
+    <div class="row justify-content-center">
+        <div class="col-12 col-xl-8">
+            <div class="card">
+                <div class="card-body p-4">
+                    <div class="mb-4">
+                        <h4 class="mb-1">Hồ sơ cá nhân</h4>
+                        <div class="text-muted">Cập nhật thông tin hiển thị của bạn</div>
+                    </div>
+                    <form th:action="@{/profile}" th:object="${userProfileDTO}" method="post">
+                        <input type="hidden" th:field="*{userId}">
+                        <div class="mb-3">
+                            <label for="studentIdCode" class="form-label">Mã sinh viên</label>
+                            <input id="studentIdCode" type="text" class="form-control" th:field="*{studentIdCode}" disabled>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input id="email" type="email" class="form-control" th:field="*{email}" disabled>
+                        </div>
+                        <div class="mb-3">
+                            <label for="fullName" class="form-label">Họ và tên</label>
+                            <input id="fullName" type="text" class="form-control" th:field="*{fullName}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Số điện thoại</label>
+                            <input id="phone" type="tel" class="form-control" th:field="*{phone}">
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">Cập nhật</button>
+                            <a th:href="@{/profile}" class="btn btn-outline-secondary">Làm mới</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>

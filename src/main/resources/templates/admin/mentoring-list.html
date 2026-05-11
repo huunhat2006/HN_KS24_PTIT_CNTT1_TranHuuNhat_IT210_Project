@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" th:replace="layout/main-layout :: main-layout(~{::content})">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${pageTitle} ?: 'Lịch Cố vấn'">Lịch Cố vấn</title>
+</head>
+<body>
+<th:block th:fragment="content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Lịch Cố vấn</h1>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="mb-3">
+                <form method="get" class="d-flex gap-2 align-items-center" data-ajax="false">
+                    <label for="sort" class="form-label mb-0">Sắp xếp:</label>
+                    <select id="sort" name="sort" class="form-select ajax-sort" style="width: auto;" data-url="/admin/mentoring">
+                        <option value="date_asc" th:selected="${currentSort == 'date_asc'}">Ngày tăng dần</option>
+                        <option value="date_desc" th:selected="${currentSort == 'date_desc'}">Ngày giảm dần</option>
+                    </select>
+                </form>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Sinh viên</th>
+                        <th>Giảng viên</th>
+                        <th>Ngày</th>
+                        <th>Giờ</th>
+                        <th>Trạng thái</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="mentoringSession : ${mentoringSessions}">
+                        <td th:text="${mentoringSession.id}"></td>
+                        <td th:text="${mentoringSession.student != null && mentoringSession.student.userProfile != null ? mentoringSession.student.userProfile.fullName : ''}"></td>
+                        <td th:text="${mentoringSession.lecturer != null && mentoringSession.lecturer.user != null && mentoringSession.lecturer.user.userProfile != null ? mentoringSession.lecturer.user.userProfile.fullName : ''}"></td>
+                        <td th:text="${#temporals.format(mentoringSession.sessionDate, 'dd/MM/yyyy')}"></td>
+                        <td th:text="|${#temporals.format(mentoringSession.startTime, 'HH:mm')} - ${#temporals.format(mentoringSession.endTime, 'HH:mm')}|"></td>
+                        <td>
+                            <span th:if="${mentoringSession.status.name() == 'PENDING'}" class="badge badge-pending">Chờ xử lý</span>
+                            <span th:if="${mentoringSession.status.name() == 'COMPLETED'}" class="badge badge-completed">Hoàn thành</span>
+                            <span th:if="${mentoringSession.status.name() == 'CANCELED'}" class="badge badge-canceled">Hủy</span>
+                            <span th:if="${mentoringSession.status.name() == 'OVERDUE'}" class="badge badge-overdue">Quá hạn</span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>

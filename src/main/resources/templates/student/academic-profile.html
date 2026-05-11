@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" th:replace="layout/main-layout :: main-layout(~{::content})">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${pageTitle} ?: 'Hồ sơ học thuật'">Hồ sơ học thuật</title>
+</head>
+<body>
+<th:block th:fragment="content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Hồ sơ học thuật</h1>
+    </div>
+    <div th:if="${#lists.isEmpty(academicRecords)}" class="alert alert-info">
+        Bạn chưa có lịch hoàn thành nào.
+    </div>
+    <div th:if="${!#lists.isEmpty(academicRecords)}">
+        <div class="row">
+            <div th:each="record : ${academicRecords}" class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-header" style="background-color: #0d6efd; color: white;">
+                        <h5 class="mb-0">
+                            <span th:text="${record.lecturerName}"></span>
+                        </h5>
+                        <small th:text="|${#temporals.format(record.sessionDate, 'dd/MM/yyyy')} • ${#temporals.format(record.startTime, 'HH:mm')} - ${#temporals.format(record.endTime, 'HH:mm')}|"></small>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="text-muted mb-2">Thiết bị sử dụng:</h6>
+                        <div th:if="${#lists.isEmpty(record.equipmentNames)}" class="text-muted small">Không có thiết bị được mượn</div>
+                        <ul class="list-unstyled" th:unless="${#lists.isEmpty(record.equipmentNames)}">
+                            <li th:each="equip : ${record.equipmentNames}">
+                                <span class="badge bg-light text-dark" th:text="${equip}"></span>
+                            </li>
+                        </ul>
+                        <hr>
+                        <h6 class="text-muted mb-2">Đánh giá:</h6>
+                        <div th:if="${record.performanceRating != null}" class="mb-2">
+                            <span class="fw-bold">Điểm:</span>
+                            <span th:text="${record.performanceRating}" style="font-size: 20px; color: #ffc107;">★</span>
+                            <span th:text="'/5'"></span>
+                        </div>
+                        <div th:if="${!record.evaluationNotes.isBlank()}">
+                            <span class="fw-bold">Nhận xét:</span>
+                            <p class="small mt-2" th:text="${record.evaluationNotes}"></p>
+                        </div>
+                        <div th:if="${record.evaluationNotes.isBlank() && record.performanceRating == null}" class="text-muted small">
+                            Giảng viên chưa đánh giá.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>
+

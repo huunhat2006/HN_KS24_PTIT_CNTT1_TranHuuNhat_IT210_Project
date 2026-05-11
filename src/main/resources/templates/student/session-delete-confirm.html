@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" th:replace="layout/main-layout :: main-layout(~{::content})">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${pageTitle} ?: 'Xác nhận hủy lịch'">Xác nhận hủy lịch</title>
+    </head>
+<body>
+<th:block th:fragment="content">
+    <div class="row justify-content-center">
+        <div class="col-12 col-xl-7">
+            <div class="card">
+                <div class="card-body p-4">
+                    <h4 class="mb-3">Xác nhận hủy lịch</h4>
+                    <div class="mb-3">Bạn có chắc chắn muốn hủy lịch này không?</div>
+                    <div class="mb-4">
+                        <div><span class="fw-semibold">Giảng viên:</span> <span th:text="${sessionDTO.lecturerName}"></span></div>
+                        <div><span class="fw-semibold">Ngày:</span> <span th:text="${sessionDTO.sessionDate}"></span></div>
+                        <div><span class="fw-semibold">Giờ:</span> <span th:text="${sessionDTO.startTime} + ' - ' + ${sessionDTO.endTime}"></span></div>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <form th:action="@{/student/cancel-session/{id}(id=${sessionDTO.id})}" method="post" data-ajax="true">
+                            <button type="submit" class="btn btn-danger">Xác nhận</button>
+                        </form>
+                        <a th:href="@{/student/my-sessions}" class="btn btn-outline-secondary ajax-link">Hủy</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>
+

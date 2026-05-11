@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" th:replace="layout/main-layout :: main-layout(~{::content})">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${pageTitle} ?: 'Quản lý Người dùng'">Quản lý Người dùng</title>
+</head>
+<body>
+<th:block th:fragment="content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Quản lý Người dùng</h1>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="mb-3">
+                <form method="get" class="d-flex gap-2 align-items-center" data-ajax="false">
+                    <label for="sort" class="form-label mb-0">Sắp xếp:</label>
+                    <select id="sort" name="sort" class="form-select ajax-sort" style="width: auto;" data-url="/admin/users">
+                        <option value="name_asc" th:selected="${currentSort == 'name_asc'}">Tên A-Z</option>
+                        <option value="name_desc" th:selected="${currentSort == 'name_desc'}">Tên Z-A</option>
+                    </select>
+                </form>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Tên đầy đủ</th>
+                        <th>Email</th>
+                        <th>Vai trò</th>
+                        <th>Ngày tạo</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="user : ${users}">
+                        <td th:text="${user.id}"></td>
+                        <td th:text="${user.username}"></td>
+                        <td th:text="${user.userProfile != null ? user.userProfile.fullName : ''}"></td>
+                        <td th:text="${user.userProfile != null ? user.userProfile.email : ''}"></td>
+                        <td>
+                            <span th:if="${user.role.name() == 'ADMIN'}" class="badge bg-dark">Admin</span>
+                            <span th:if="${user.role.name() == 'LECTURER'}" class="badge" style="background-color: #20c997;">Giảng viên</span>
+                            <span th:if="${user.role.name() == 'STUDENT'}" class="badge bg-info text-dark">Sinh viên</span>
+                        </td>
+                        <td th:text="${#temporals.format(user.createdAt, 'dd/MM/yyyy')}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>
