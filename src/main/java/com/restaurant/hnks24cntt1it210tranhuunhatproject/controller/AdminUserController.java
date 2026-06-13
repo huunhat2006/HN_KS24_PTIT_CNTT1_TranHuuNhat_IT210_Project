@@ -2,7 +2,7 @@ package com.restaurant.hnks24cntt1it210tranhuunhatproject.controller;
 
 import com.restaurant.hnks24cntt1it210tranhuunhatproject.config.WebRequestSupport;
 import com.restaurant.hnks24cntt1it210tranhuunhatproject.entity.User;
-import com.restaurant.hnks24cntt1it210tranhuunhatproject.repository.UserRepository;
+import com.restaurant.hnks24cntt1it210tranhuunhatproject.service.AdminService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/admin/users")
 public class AdminUserController {
 
-    private final UserRepository userRepository;
+    private final AdminService adminService;
 
     @GetMapping
     public String userList(
@@ -31,15 +31,7 @@ public class AdminUserController {
             return "redirect:/login";
         }
 
-        var users = userRepository.findAll();
-
-        if ("name_asc".equals(sort)) {
-            users.sort((a, b) -> a.getUsername().compareToIgnoreCase(b.getUsername()));
-        } else if ("name_desc".equals(sort)) {
-            users.sort((a, b) -> b.getUsername().compareToIgnoreCase(a.getUsername()));
-        }
-
-        model.addAttribute("users", users);
+        model.addAttribute("users", adminService.getUsers(sort));
         model.addAttribute("currentSort", sort);
         model.addAttribute("pageTitle", "Quản lý Người dùng");
 

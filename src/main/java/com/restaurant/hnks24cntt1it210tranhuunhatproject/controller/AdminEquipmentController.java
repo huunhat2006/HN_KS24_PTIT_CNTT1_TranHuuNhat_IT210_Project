@@ -2,7 +2,6 @@ package com.restaurant.hnks24cntt1it210tranhuunhatproject.controller;
 
 import com.restaurant.hnks24cntt1it210tranhuunhatproject.config.WebRequestSupport;
 import com.restaurant.hnks24cntt1it210tranhuunhatproject.dto.EquipmentDTO;
-import com.restaurant.hnks24cntt1it210tranhuunhatproject.repository.LabTypeRepository;
 import com.restaurant.hnks24cntt1it210tranhuunhatproject.service.EquipmentService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +25,6 @@ import java.util.stream.Collectors;
 public class AdminEquipmentController {
 
     private final EquipmentService equipmentService;
-    private final LabTypeRepository labTypeRepository;
 
     @GetMapping({"", "/"})
     public String listEquipments(
@@ -50,7 +48,7 @@ public class AdminEquipmentController {
     @GetMapping("/add")
     public String showAddForm(HttpServletRequest request, Model model) {
         model.addAttribute("equipmentDTO", new EquipmentDTO());
-        model.addAttribute("labTypes", labTypeRepository.findAll());
+        model.addAttribute("labTypes", equipmentService.getAllLabTypes());
         model.addAttribute("pageTitle", "Thêm mới thiết bị");
         return WebRequestSupport.view("admin/equipment-form", WebRequestSupport.isAjaxRequest(request, null));
     }
@@ -59,7 +57,7 @@ public class AdminEquipmentController {
     public String showEditForm(@PathVariable Integer id, HttpServletRequest request, Model model) {
         EquipmentDTO equipmentDTO = equipmentService.getEquipmentById(id);
         model.addAttribute("equipmentDTO", equipmentDTO);
-        model.addAttribute("labTypes", labTypeRepository.findAll());
+        model.addAttribute("labTypes", equipmentService.getAllLabTypes());
         model.addAttribute("pageTitle", "Cập nhật thiết bị");
         return WebRequestSupport.view("admin/equipment-form", WebRequestSupport.isAjaxRequest(request, null));
     }
@@ -97,7 +95,7 @@ public class AdminEquipmentController {
                 model.addAttribute("equipmentDTO", equipmentDTO);
                 model.addAttribute("errorMessage", ex.getMessage());
                 model.addAttribute("pageTitle", equipmentDTO.getId() != null ? "Cập nhật thiết bị" : "Thêm mới thiết bị");
-                model.addAttribute("labTypes", labTypeRepository.findAll());
+                model.addAttribute("labTypes", equipmentService.getAllLabTypes());
                 return WebRequestSupport.view("admin/equipment-form", true);
             }
             redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());

@@ -38,6 +38,12 @@ public class EquipmentServiceImpl implements EquipmentService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<LabType> getAllLabTypes() {
+        return labTypeRepository.findAll();
+    }
+
+    @Override
     @Transactional
     public EquipmentDTO createEquipment(EquipmentDTO equipmentDTO) {
         LabType labType = null;

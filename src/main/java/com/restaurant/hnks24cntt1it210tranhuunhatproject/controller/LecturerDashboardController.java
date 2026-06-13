@@ -3,7 +3,6 @@ package com.restaurant.hnks24cntt1it210tranhuunhatproject.controller;
 import com.restaurant.hnks24cntt1it210tranhuunhatproject.config.WebRequestSupport;
 import com.restaurant.hnks24cntt1it210tranhuunhatproject.dto.LecturerDashboardDTO;
 import com.restaurant.hnks24cntt1it210tranhuunhatproject.entity.User;
-import com.restaurant.hnks24cntt1it210tranhuunhatproject.repository.MentoringSessionRepository;
 import com.restaurant.hnks24cntt1it210tranhuunhatproject.service.LecturerService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/lecturer")
 public class LecturerDashboardController {
 
-    private final MentoringSessionRepository mentoringSessionRepository;
     private final LecturerService lecturerService;
 
     @GetMapping("/dashboard")

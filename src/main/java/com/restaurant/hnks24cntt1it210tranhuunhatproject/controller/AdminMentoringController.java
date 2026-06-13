@@ -2,7 +2,7 @@ package com.restaurant.hnks24cntt1it210tranhuunhatproject.controller;
 
 import com.restaurant.hnks24cntt1it210tranhuunhatproject.config.WebRequestSupport;
 import com.restaurant.hnks24cntt1it210tranhuunhatproject.entity.User;
-import com.restaurant.hnks24cntt1it210tranhuunhatproject.repository.MentoringSessionRepository;
+import com.restaurant.hnks24cntt1it210tranhuunhatproject.service.AdminService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/admin/mentoring")
 public class AdminMentoringController {
 
-    private final MentoringSessionRepository mentoringSessionRepository;
+    private final AdminService adminService;
 
     @GetMapping
     public String mentoringList(
@@ -31,15 +31,7 @@ public class AdminMentoringController {
             return "redirect:/login";
         }
 
-        var sessions = mentoringSessionRepository.findAll();
-
-        if ("date_asc".equals(sort)) {
-            sessions.sort((a, b) -> a.getSessionDate().compareTo(b.getSessionDate()));
-        } else if ("date_desc".equals(sort)) {
-            sessions.sort((a, b) -> b.getSessionDate().compareTo(a.getSessionDate()));
-        }
-
-        model.addAttribute("mentoringSessions", sessions);
+        model.addAttribute("mentoringSessions", adminService.getMentoringSessions(sort));
         model.addAttribute("currentSort", sort);
         model.addAttribute("pageTitle", "Quản lý Lịch Cố vấn");
 

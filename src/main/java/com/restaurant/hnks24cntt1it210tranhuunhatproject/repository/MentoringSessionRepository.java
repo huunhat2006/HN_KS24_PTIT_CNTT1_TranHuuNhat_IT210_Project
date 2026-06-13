@@ -20,6 +20,14 @@ public interface MentoringSessionRepository extends JpaRepository<MentoringSessi
 			"FROM MentoringSession s GROUP BY s.lecturer.user.userProfile.fullName ORDER BY cnt DESC")
 	List<Object[]> findTopLecturers(Pageable pageable);
 
+	@Query("SELECT DISTINCT s FROM MentoringSession s " +
+			"LEFT JOIN FETCH s.student student " +
+			"LEFT JOIN FETCH student.userProfile studentProfile " +
+			"LEFT JOIN FETCH s.lecturer lecturer " +
+			"LEFT JOIN FETCH lecturer.user lecturerUser " +
+			"LEFT JOIN FETCH lecturerUser.userProfile lecturerProfile")
+	List<MentoringSession> findAllWithDetails();
+
 	@Query("SELECT s FROM MentoringSession s WHERE s.lecturer.userId = :lecturerId")
 	List<MentoringSession> findByLecturerId(@Param("lecturerId") Integer lecturerId);
 
